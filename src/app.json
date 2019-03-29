@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "pages/login/main",
+    "pages/index/main",
+    "pages/help/main",
+    "pages/center/main"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#ea6f5a",
+    "navigationBarTitleText": "测试项目",
+    "navigationBarTextStyle": "white"
+  }
+}
