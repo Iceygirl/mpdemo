@@ -1,14 +1,36 @@
 {
   "pages": [
-    "pages/login/main",
+    "pages/place/main",
     "pages/index/main",
+    "pages/login/main",
     "pages/help/main",
-    "pages/center/main"
+    "pages/center/main",
+    "pages/statistic/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#ea6f5a",
+    "navigationBarBackgroundColor": "#00A1FF",
     "navigationBarTitleText": "测试项目",
     "navigationBarTextStyle": "white"
+  },
+  "tabBar":{
+    "color": "#999",
+    "selectedColor": "#00A1FF",
+    "list": [{
+      "pagePath":"pages/index/main",
+      "text":"首页",
+      "iconPath":"/static/images/index.png",
+      "selectedIconPath":"/static/images/index_active.png"
+    },{
+      "pagePath":"pages/help/main",
+      "text":"帮助中心",
+      "iconPath":"/static/images/help.png",
+      "selectedIconPath":"/static/images/help_active.png"
+    },{
+      "pagePath":"pages/center/main",
+      "text":"个人中心",
+      "iconPath":"/static/images/center.png",
+      "selectedIconPath":"/static/images/center_active.png"
+    }]
   }
 }

@@ -1,5 +1,3 @@
-import Vue from 'vue'
-
 // 设置,获取本地存储
 export function toStorage(key,val) {
     if(val) {
@@ -15,14 +13,46 @@ export function removeStorage(key) {
 }
 
 
-// 显示成功Toast
+// 显示Toast
 export function Toast(title,isShowIcon) {
-    let config = {}
-    if(isShowIcon) {
-        config = {
-            title:title,
-            icon:'success'
-        }
+    let config = {
+        title
     }
-    return 
+    // isShowIcon表示是否显示成功icon
+    config.icon = isShowIcon ?  'success' : 'none'
+    return wx.showToast(config)
 }
+
+ 
+// 显示加载中
+export function Loading(title) {
+    return  wx.showLoading({
+                title: title
+            })
+} 
+
+// 隐藏加载中
+export function hideLoading(title) {
+    return  wx.hideLoading()
+}
+
+// 显示弹框Modal
+export function Modal(title,content,success,fail) {
+    return wx.showModal({
+        title,
+        content,
+        success,
+        fail
+    })
+}
+
+// 显示弹框Modal,提示加确定按钮
+export function TipModal(content) {
+    return wx.showModal({
+        content,
+        showCancel:false
+    })
+}
+
+
+
