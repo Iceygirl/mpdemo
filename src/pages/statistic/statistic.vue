@@ -1,7 +1,7 @@
 <template>
-  <!-- 帮助中心 -->
-  <div class="help">
-    帮助中心
+  <!-- 日报表和累计统计 -->
+  <div class="statistic">
+    统计情况
   </div>
 </template>
 
@@ -14,7 +14,7 @@ export default {
   },
   onLoad(){
     wx.setNavigationBarTitle({
-      title:'帮助中心',
+      title:'巡查工作统计',
     })
   },
   methods: {
