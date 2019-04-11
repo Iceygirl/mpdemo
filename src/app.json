@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/place/main",
     "pages/index/main",
+    "pages/place/main",
     "pages/login/main",
     "pages/help/main",
     "pages/center/main",

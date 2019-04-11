@@ -10,7 +10,7 @@
       </div>
     </div> 
 
-    <!-- 下拉查找 -->
+    <!-- 下拉查找 --> 
     <ul class="searchList">
       <li class="item" v-for="(item,index) in searchList" :key="index"> 
         <p class="select">
@@ -22,7 +22,7 @@
     <div class="placeList">
       <p class="total">已筛选<span class="num">11</span>家场所</p>
       <ul class="list">
-        <li class="item">
+        <li class="item" v-for="i in 5" :key="i">
           <div class="seg seg1">
             <h3 class="name">aaa</h3>
             <p class="detail">地址：</p>
@@ -34,18 +34,26 @@
             <p class="detail">巡查结果<span class="redFlag"></span></p>
             <span class="rating">三小场所</span>
           </div>
-          <div class="seg">
+          <div class="seg seg2">
             <span class="label">巡查执行</span>
-            <i class="iconfont iconjiantouarrow487"></i></div>
+            <i class="iconfont iconjiantouarrow487"></i>
+          </div>
         </li>
       </ul>
     </div>
+
+    <page></page>
   </div>
 </template>
 
-<script>
+<script> 
+
+import page from 'components/page'
 
 export default {
+  components: {
+    page
+  },
   data () {
     return {
       searchList:[{
@@ -75,13 +83,17 @@ export default {
 <style lang="scss" scoped>
 .place {
   .searchWrap {
+    width:100%;
     padding:40rpx;
     background-color:#fff;
+    position: fixed;
+    top:0;
+    left:0;
     .nameWrap {
-      width:100%;
+      width:90%;
       position:relative;
       input {
-        width:90%;
+        width:80%;
         border-radius:50rpx;
         background-color:#f4f4f4;
         padding-left:30rpx;
@@ -99,7 +111,7 @@ export default {
         font-size:26rpx;
         color:#fff; 
         position:absolute;
-        right:0;
+        right:20rpx;
         top:0;
       }
     }
@@ -107,12 +119,13 @@ export default {
 
 
   .searchList {
+    padding-top:150rpx;
     background-color:#E7F6FF;
     display:flex;
     justify-content: space-around;
     .item {
       flex:1;
-      padding:40rpx 0 40rpx 30rpx;
+      padding:30rpx 0 30rpx 40rpx;
       .select {
         .downIcon {
           display:inline-block;
@@ -120,13 +133,13 @@ export default {
           border-left:8rpx solid transparent;
           border-right:8rpx solid transparent;
           margin-left:10rpx;
-
         }
       }
     }
   }
 
   .placeList {
+    margin-bottom:10rpx;
     .total {
       height:90rpx;
       line-height:90rpx;
@@ -146,32 +159,50 @@ export default {
         display: flex;
         justify-content: space-between;
         font-size:28rpx;
+        background-color: #fff; 
         .seg {
-          .title {
+          .name {
             font-size:36rpx;
             font-weight: bold;
             color:#444;
-            margin-bottom:20px;
+            margin-bottom:20rpx;
           }
           .detail {
-            line-height:4rpx;
+            width:100%;
+            word-break:break-all;
+            line-height:40rpx;
           }
           .redFlag {
             color:#FF4C4C; 
           }
           .rating {
-
+            display:inline-block;
+            padding:8rpx 30rpx;
+            border-radius:30rpx;
+            background:linear-gradient(to right, #00A1FF, #007AFF);
+            font-size:22rpx;
+            color:#fff;
+            margin-top:20rpx;
           }
           .label {
-
+            display: inline-block;
+            width:60rpx;
+            color:#00A1FF;
           }
           i {
-
+            font-size:24rpx;
+            color:#00A1FF;
+            margin:10rpx 0 0 10rpx;
           }
         }
         .seg1 {
-          width:80%;
-          border-right:2rpx solid #999;
+          width:90%;
+          border-right:2rpx solid #eee;
+        }
+        .seg2 {
+          padding-left:30rpx;
+          padding-top:50rpx;
+          box-sizing:border-box;
         }
       }
     }

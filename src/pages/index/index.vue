@@ -9,7 +9,7 @@
     <!-- menu菜单 -->
     <div class="menuWrap">
       <ul class="menu">
-        <li class="menuItem" v-for="(item,index) in indexMenu" :key="index">
+        <li class="menuItem" v-for="(item,index) in indexMenu" :key="index" @click="jumpTo(item.path,index)">
           <div class="iconWrap" :class="'iconWrap-'+index">
             <i class="iconfont" :class="item.icon"></i>
           </div>
@@ -17,7 +17,7 @@
         </li>
       </ul>
     </div>
-
+ 
     <!-- 统计情况 -->
     <div class="section">
       <h3 class="title">
@@ -54,6 +54,16 @@ export default {
     })
   },
   methods: {
+    // 菜单页面跳转
+    jumpTo(path,index) {
+      let url = ''
+      if(index === 0) {
+        url = path + '?type='
+      }
+      wx.navigateTo({ 
+        url: path
+      })
+    }
   }
 }
 </script>

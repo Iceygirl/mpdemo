@@ -3,13 +3,16 @@
 // 首页menu
 export const indexMenu = [{
     icon:'iconicon-',
-    name:'未巡场所'
+    name:'未巡场所',
+    path:'/pages/place/main'
     },{
     icon:'iconlvzhou_fenzhichangsuo',
-    name:'全部场所'
+    name:'全部场所',
+    path:'/pages/place/main'
     },{
     icon:'icontongji',
-    name:'日报统计'
+    name:'日报统计',
+    path:'/pages/place/main'
 }]
 
 
