@@ -5,34 +5,41 @@
     <!-- 搜索 -->
     <div class="searchWrap">
       <div class="nameWrap">
-        <input type="text" v-model="searchValue.name" placeholder="快速查找" placeholder-style="color:#999;" @confim="search">
+        <input type="text" v-model="unit.name" placeholder="快速查找" placeholder-style="color:#999;" @confirm="search">
         <button class="btn" @click="search">搜索</button>
       </div>
-    </div> 
+    </div>  
 
     <!-- 下拉查找 --> 
     <ul class="searchList">
-      <li class="item" v-for="(item,index) in searchList" :key="index"> 
-        <p class="select">
-          {{item.name}}<span class="downIcon"></span>
-        </p>
-      </li>
+      <li class="item" v-for="(item,index) in placeSearchList" :key="index"> 
+        <picker :range="item.range"  @change="(e)=>{ return pickerChange(item,e)}" >
+          <p class="select">
+            {{item.range[item.selectedIndex]}}<span class="downIcon"></span>
+          </p>
+        </picker>
+      </li>  
     </ul>
 
+
     <div class="placeList">
-      <p class="total">已筛选<span class="num">11</span>家场所</p>
+      <p class="total">已筛选<span class="num">{{total}}</span>家场所</p>
       <ul class="list">
-        <li class="item" v-for="i in 5" :key="i">
+        <li class="item" v-for="(item,index) in placeList" :key="index">
           <div class="seg seg1">
-            <h3 class="name">aaa</h3>
-            <p class="detail">地址：</p>
-            <p class="detail">营业状态：</p>
-            <div>
-              <p class="detail">电话：</p>
-              <p class="detail">消防责任安全人：</p>
+            <h3 class="name">{{item.name}}</h3>
+            <p class="detail">地址：{{item.address}}</p>
+            <p class="detail">营业状态：{{item.status}}</p>
+            <div v-show="pageType === 'all'">
+              <p class="detail">电话：{{item.headPhone}}</p>
+              <p class="detail">消防责任安全人：{{item.head}}</p>
             </div>
-            <p class="detail">巡查结果<span class="redFlag"></span></p>
-            <span class="rating">三小场所</span>
+            <p class="detail">巡查结果：<span class="redFlag">{{item.patrol}}</span></p>
+            <div v-show="item.patrol === '不合格'">
+              <p class="detail">分数：<span class="redFlag">{{item.lastTotalValue}}分</span></p>
+              <p class="detail">整改期限：<span class="redFlag">{{item.fixedTime}}</span></p>
+            </div>
+            <span class="rating">{{item.rating}}</span>
           </div>
           <div class="seg seg2">
             <span class="label">巡查执行</span>
@@ -42,26 +49,37 @@
       </ul>
     </div>
 
-    <page></page>
+    <page :current="current" :total="total" @pageChange="pageChange"></page>
   </div>
 </template>
 
 <script> 
-
+ 
 import page from 'components/page'
-
+import { patrolPlace } from 'api/port'
+import { pages, ERR_OK, likeSearchStr } from 'api/config'
+import { failRequest } from 'js/util'
+import time from 'time-formater'
+import { placeSearchList } from 'js/gobalData'
+ 
 export default {
   components: {
     page
   },
   data () {
-    return {
-      searchList:[{
-        name:'全部类型'
-      },{
-        name:'全部批次'
-      }],
+    return {  
+      pageType:'',
+      current:1,
+      total:0,
+      placeSearchList:placeSearchList,
+      placeList:[],
       searchValue:{
+        batch:'',
+        patrol:0,
+        status:1,
+        type:1
+      },
+      unit: {
         name:''
       }
     }
@@ -70,11 +88,88 @@ export default {
     wx.setNavigationBarTitle({
       title:'巡查场所',
     })
+
+    this.pageType = this.$root.$mp.query.type
+    this.pageType = 'all' 
+    // 如果是未巡查的话不需要显示全部状态的搜索项
+    if(this.pageType === 'patrol') {
+      this.placeSearchList.splice(0,1)
+    }
+  },
+  mounted() {
+    this._getPlaceList()
   },
   methods: {
+    // 获取场所列表
+    _getPlaceList(page) {
+      this.Loading('加载中..')
+      pages.page = page !== undefined ? page : 1
+      let data = {
+        ...pages,
+        searchValue:this.searchValue
+      }
+      // 这里很奇怪，访问接口的时候入参会增加__newReference参数，需要把它删除
+      if(!data.searchValue.__newReference) delete data.searchValue.__newReference
+     
+      patrolPlace(data) 
+        .then(res=>{
+          if(res.code === ERR_OK) {
+            let result = res.result
+            this.total = result.total
+            let arr = [], obj = {}
+            result.list.map(item=>{
+              obj = {
+                name:item.name,
+                address:item.address,
+                status:item.status === 0 ? '停业' : '营业中',
+                headPhone:item.headPhone,
+                head:item.head,
+                patrol:item.patrol === 0 ? '未巡查' : ( item.patrol === 1 ? '合格' : '不合格' ),
+                rating:item.rating
+              }
+              if(obj.patrol === '不合格') {
+                obj.fixedTime = time(item.fixedTime).format('YYYY-MM-DD')
+                obj.lastTotalValue = item.lastTotalValue
+              }
+              arr.push(obj)
+            }) 
+
+            this.placeList = arr
+          } else {
+            failRequest(res.code,res.message)
+          }
+          this.hideLoading() 
+        })  
+        .catch(error=>{
+          this.hideLoading()
+        })
+    },
+    // 搜索下拉选择
+    pickerChange(item,e) {
+      item.selectedIndex = e.mp.detail.value 
+    },
+    // 分页
+    pageChange(page) {
+      this.current = page
+      this._getPlaceList(this.current)
+    },
+    // 过滤SearchValue,供搜索
+    filterSearchValue() {
+
+      // 按场所名称搜索
+      if(this.unit.name) {
+        this.searchValue.name = this.unit.name + likeSearchStr
+      } else {
+        delete this.searchValue.name
+      }
+
+
+    },
     // 搜索
     search() {
-
+      this.filterSearchValue()
+      this.current = 1
+      this._getPlaceList(this.current)
     }
   }
 }
@@ -171,6 +266,7 @@ export default {
             width:100%;
             word-break:break-all;
             line-height:40rpx;
+            font-size:26rpx;
           }
           .redFlag {
             color:#FF4C4C; 
@@ -197,11 +293,12 @@ export default {
         }
         .seg1 {
           width:90%;
+          padding-right:10rpx;
           border-right:2rpx solid #eee;
         }
         .seg2 {
           padding-left:30rpx;
-          padding-top:50rpx;
+          padding-top:70rpx;
           box-sizing:border-box;
         }
       }

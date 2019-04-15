@@ -3,8 +3,8 @@
 import { httpUrl } from './config'
 import { toStorage } from 'js/dom'
 
-export function ajax(url,method,data) {
-    url = `${httpUrl}/sszhxf-web/${url}?token=${toStorage('userinfo').token}`
+export function ajax(url,method,data,needToken) {
+    url = needToken ? `${httpUrl}/sszhxf-web/${url}?token=${toStorage('token')}` : `${httpUrl}/sszhxf-web/${url}`
     return new Promise((resolve,reject)=>{
         wx.request({
             url, 

@@ -1,21 +1,78 @@
 <template>
+    <!-- 分页组件 -->
     <section class="page">
         <div class="top">
-            <p class="pageItem">首页</p>
+            <p class="pageItem" @click="toPage('first')">首页</p>
             <div class="wrap">
-                <span>上一页</span>
+                <span @click="toPage('prev')">上一页</span>
                 <label>|</label>
-                <span>下一页</span>
+                <span @click="toPage('next')">下一页</span>
             </div>
-            <p class="pageItem">尾页</p>
+            <p class="pageItem" @click="toPage('last')">尾页</p>
         </div>
-        <p class="total">当前第1页/共2页 总数：200条</p>
+        <p class="total">当前第{{curPage}}页/共{{totalPage}}页 总数：{{total}}条</p>
     </section>
 </template>
 
 <script>
+import { pages } from 'api/config'
+
 export default {
-    
+    props:{
+        current:{
+            type:Number,
+            default:1
+        },
+        total:{
+            type:Number,
+            default:0
+        }
+    },
+    computed: {
+        totalPage() {
+            return this.total > 0 ? ((this.total%pages.pageSize === 0) ? parseInt(this.total/pages.pageSize) :(parseInt(this.total/pages.pageSize) + 1)) : 1
+        }
+    },
+    data() {
+        return {
+            curPage:1
+        }
+    },
+    watch: {
+        current(val) {
+            this.curPage = val
+        }
+    },
+    methods:{
+        toPage(str) {
+            if(str === 'first') {
+
+                // 点击首页
+                if(this.curPage === 1) return 
+                this.curPage = 1
+
+            } else if(str === 'prev') {
+
+                // 点击上一页
+                if(this.curPage === 1) return
+                this.curPage --
+
+            } else if(str === 'next') {
+
+                // 点击下一页
+                if(this.curPage === this.totalPage) return
+                this.curPage ++
+
+            } else if(str === 'last') {
+
+                // 点击尾页
+                if(this.curPage === this.totalPage) return
+                this.curPage = this.totalPage
+            }
+
+            this.$emit('pageChange',this.curPage)
+        }
+    }
 }
 </script>
 

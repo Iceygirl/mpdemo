@@ -54,15 +54,15 @@ export default {
     })
   },
   methods: {
-    // 菜单页面跳转
+    // 菜单页面跳转 
     jumpTo(path,index) {
-      let url = ''
+      let url = path
       if(index === 0) {
-        url = path + '?type='
+        url = url + '?type=patrol'
+      } else if(index === 1) {
+        url = url + '?type=all'
       }
-      wx.navigateTo({ 
-        url: path
-      })
+      wx.navigateTo({url})
     }
   }
 }

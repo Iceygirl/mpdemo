@@ -91,11 +91,13 @@ export default {
         openid:'oKRd75RrAXrPw51a9GPhVVnmhCco',  //暂时写死
         ...this.form
       }
+      if(!data.__newReference) delete data.__newReference  
       login(data)
         .then(res=>{
           if(res.code === ERR_OK) {
             this.Toast('登录成功',true)
-            toStorage('userinfo',res.result)
+            // toStorage('userinfo',res.result)
+            toStorage('token',res.result.token)
             wx.switchTab({
               url: '/pages/index/main'
             })
@@ -114,6 +116,8 @@ export default {
 
 <style lang="scss" scoped>
 .login {
+  height:100%;
+  background:#fff;
   .bg {
     width:100%;
     height:480rpx;

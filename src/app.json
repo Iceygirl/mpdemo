@@ -1,8 +1,8 @@
 {
   "pages": [
-    "pages/index/main",
     "pages/place/main",
     "pages/login/main",
+    "pages/index/main",
     "pages/help/main",
     "pages/center/main",
     "pages/statistic/main"
